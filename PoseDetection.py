@@ -1,16 +1,16 @@
 import cv2
 import mediapipe as mp
 import numpy as np
-
+import time
 
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 dimension = [1280, 720]
 
 sit_flag = False
-hip_angle = False
+pick_flag = False
 elbow_angle = False
-
+start_flag = False
 # Calculate Angle
 
 
@@ -62,14 +62,18 @@ with mp_pose.Pose(min_detection_confidence=0.8, min_tracking_confidence=0.8) as 
             left_elbow = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x,
                           landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
             left_wrist = [landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].x,
-                          landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y]
+                          landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y, landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].z]
+            left_eye = [landmarks[mp_pose.PoseLandmark.LEFT_EYE.value].x,
+                        landmarks[mp_pose.PoseLandmark.LEFT_EYE.value].y, landmarks[mp_pose.PoseLandmark.LEFT_EYE.value].z]
 
             right_shoulder = [landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x,
                               landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y]
             right_elbow = [landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].x,
                            landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].y]
             right_wrist = [landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].x,
-                           landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].y]
+                           landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].y, landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].z]
+            right_eye = [landmarks[mp_pose.PoseLandmark.RIGHT_EYE.value].x,
+                         landmarks[mp_pose.PoseLandmark.RIGHT_EYE.value].y, landmarks[mp_pose.PoseLandmark.RIGHT_EYE.value].z]
 
             left_hip = [landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].x,
                         landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].y]
@@ -105,11 +109,23 @@ with mp_pose.Pose(min_detection_confidence=0.8, min_tracking_confidence=0.8) as 
                 right_shoulder, right_hip, right_knee)
 
             if sit_flag == False:
-                if left_hand_angle >= 104 and right_hand_angle >= 104 and left_leg_angle <= 72 and right_leg_angle <= 72 and left_hip_angle <= 75 and right_hip_angle <= 75:
+                if left_leg_angle <= 75 and right_leg_angle <= 75 and left_hip_angle <= 75 and right_hip_angle <= 75:
                     sit_flag = True
                     print("Sit Flag True")
                     # time.sleep(1)
 
+            if sit_flag == True and pick_flag == False:
+                if left_leg_angle >= 120 and right_leg_angle >= 120 and left_hip_angle >= 90 and right_hip_angle >= 90:
+                    pick_flag = True
+                    print("Pick Flag True")
+                    # time.sleep(1)
+
+            if pick_flag == True and start_flag == False:
+                if left_hand_angle >= 90 and right_hand_angle >= 90 and right_leg_angle >= 90 and left_leg_angle >= 90 and right_hip_angle >= 90 and left_hip_angle >= 90 and right_eye[1] < right_wrist[1] and left_eye[1] < left_wrist[1]:
+                    start_flag = True
+                    start_time = time.time()
+                    print("Start Flag True".format(start_time))
+                    # time.sleep(1)
             # Visualize angle
             # cv2.putText(image, str(left_hand_angle),
              #           tuple(np.multiply(left_elbow, dimension).astype(int)),
@@ -119,13 +135,13 @@ with mp_pose.Pose(min_detection_confidence=0.8, min_tracking_confidence=0.8) as 
              #           tuple(np.multiply(right_elbow, dimension).astype(int)),
               #          cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
 
-            cv2.putText(image, str(left_leg_angle),
-                        tuple(np.multiply(left_knee, dimension).astype(int)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
+            # cv2.putText(image, str(left_leg_angle),
+             #           tuple(np.multiply(left_knee, dimension).astype(int)),
+              #          cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
 
-            cv2.putText(image, str(right_leg_angle),
-                        tuple(np.multiply(right_knee, dimension).astype(int)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
+            # cv2.putText(image, str(right_leg_angle),
+             #           tuple(np.multiply(right_knee, dimension).astype(int)),
+              #          cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
 
            # print(landmarks)
         except:
