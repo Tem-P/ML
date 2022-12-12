@@ -45,6 +45,8 @@ with mp_pose.Pose(min_detection_confidence=0.8, min_tracking_confidence=0.8) as 
         #cap.set(cv2.CAP_PROP_FRAME_WIDTH, dimension[0])
         #cap.set(cv2.CAP_PROP_FRAME_HEIGHT, dimension[1])
         ret, frame = cap.read()
+        if type(frame)==type(None):
+            break
         frame = cv2.resize(frame, (1540, 800))
         # Recolor Feed
         image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
