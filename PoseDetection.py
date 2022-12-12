@@ -39,6 +39,7 @@ cap = cv2.VideoCapture("w1.mp4")
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, dimension[0])
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, dimension[1])
 
+vid_writer = None
 # setup mediapipe instance
 with mp_pose.Pose(min_detection_confidence=0.8, min_tracking_confidence=0.8) as pose:
     while cap.isOpened():
@@ -48,6 +49,9 @@ with mp_pose.Pose(min_detection_confidence=0.8, min_tracking_confidence=0.8) as 
         if type(frame)==type(None):
             break
         frame = cv2.resize(frame, (1540, 800))
+        if vid_writer==None:
+            vid_writer = cv2.VideoWriter('output.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 10, (frame.shape[1],frame.shape[0]))
+
         # Recolor Feed
         image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         image.flags.writeable = False
@@ -202,8 +206,12 @@ with mp_pose.Pose(min_detection_confidence=0.8, min_tracking_confidence=0.8) as 
 
         cv2.imshow('MediaPipe Feed', image)
 
+        vid_writer.write(image)
+
         if cv2.waitKey(10) & 0xFF == ord('q'):
             break
+
+vid_writer.release()
 
 if end_flag == True and start_flag == True:
     print("Success")
