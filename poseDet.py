@@ -4,8 +4,6 @@ import numpy as np
 import time
 
 
-
-
 def distance(a, b):
     return (a[0]-b[0]) + (a[1]-b[1]) + (a[2]-b[2])
 
@@ -24,7 +22,7 @@ def calculate_angle(a, b, c):
     if angle > 180.0:
         angle = 360 - angle
 
-    return round(angle,2)
+    return round(angle, 2)
 
 
 # Function for Sit Flag
@@ -36,7 +34,6 @@ def sit_Check(left_leg_angle, right_leg_angle):
         return False
 
 
-
 # Function for Pick Flag
 
 def pick_Check(left_leg_angle, right_leg_angle, left_hip_angle, right_hip_angle):
@@ -44,7 +41,6 @@ def pick_Check(left_leg_angle, right_leg_angle, left_hip_angle, right_hip_angle)
         return True
     else:
         return False
-
 
 
 # Function for Start Flag
@@ -56,14 +52,11 @@ def start_Check(left_hand_angle, right_hand_angle, left_leg_angle, right_leg_ang
         return False
 
 
-
-
 def weight_lifting(fname=0, configs=None):
 
     mp_drawing = mp.solutions.drawing_utils
     mp_pose = mp.solutions.pose
     dimension = [1500, 800]
-
 
     vid_writer = None
     sit_flag = False
@@ -89,10 +82,9 @@ def weight_lifting(fname=0, configs=None):
 
             frame = cv2.resize(frame, (1540, 800))
 
-            if vid_writer==None:
-                vid_writer = cv2.VideoWriter('output.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 10, (frame.shape[1],frame.shape[0]))
-
-
+            if vid_writer == None:
+                vid_writer = cv2.VideoWriter('output.mp4', cv2.VideoWriter_fourcc(
+                    *'mp4v'), 10, (frame.shape[1], frame.shape[0]))
 
             # Recolor Feed
             image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -112,40 +104,39 @@ def weight_lifting(fname=0, configs=None):
                 # Get coordinates
 
                 left_shoulder = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,
-                                landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
+                                 landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
                 left_elbow = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x,
-                            landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
+                              landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
                 left_wrist = [landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].x,
-                            landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y, landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].z]
+                              landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y, landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].z]
                 left_eye = [landmarks[mp_pose.PoseLandmark.LEFT_EYE.value].x,
                             landmarks[mp_pose.PoseLandmark.LEFT_EYE.value].y, landmarks[mp_pose.PoseLandmark.LEFT_EYE.value].z]
 
                 right_shoulder = [landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x,
-                                landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y]
+                                  landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y]
                 right_elbow = [landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].x,
-                            landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].y]
+                               landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].y]
                 right_wrist = [landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].x,
-                            landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].y, landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].z]
+                               landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].y, landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].z]
                 right_eye = [landmarks[mp_pose.PoseLandmark.RIGHT_EYE.value].x,
-                            landmarks[mp_pose.PoseLandmark.RIGHT_EYE.value].y, landmarks[mp_pose.PoseLandmark.RIGHT_EYE.value].z]
+                             landmarks[mp_pose.PoseLandmark.RIGHT_EYE.value].y, landmarks[mp_pose.PoseLandmark.RIGHT_EYE.value].z]
 
                 left_hip = [landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].x,
                             landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].y]
                 left_knee = [landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].x,
-                            landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].y]
+                             landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].y]
                 left_ankle = [landmarks[mp_pose.PoseLandmark.LEFT_ANKLE.value].x,
-                            landmarks[mp_pose.PoseLandmark.LEFT_ANKLE.value].y]
+                              landmarks[mp_pose.PoseLandmark.LEFT_ANKLE.value].y]
 
                 right_hip = [landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].x,
-                            landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].y]
+                             landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].y]
                 right_knee = [landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].x,
-                            landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].y]
+                              landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].y]
                 right_ankle = [landmarks[mp_pose.PoseLandmark.RIGHT_ANKLE.value].x,
-                            landmarks[mp_pose.PoseLandmark.RIGHT_ANKLE.value].y]
+                               landmarks[mp_pose.PoseLandmark.RIGHT_ANKLE.value].y]
 
                 nose = [landmarks[mp_pose.PoseLandmark.NOSE.value].x,
                         landmarks[mp_pose.PoseLandmark.NOSE.value].y, landmarks[mp_pose.PoseLandmark.NOSE.value].z]
-
 
                 # Calculate Angle
                 left_hand_angle = calculate_angle(
@@ -166,69 +157,72 @@ def weight_lifting(fname=0, configs=None):
                 right_hip_angle = calculate_angle(
                     right_shoulder, right_hip, right_knee)
 
-
                 if sit_flag == False:
                     sit_flag = sit_Check(left_leg_angle, right_leg_angle)
-
 
                 #  Function for pick Flag
 
                 if sit_flag == True and pick_flag == False:
-                    pick_flag = pick_Check(left_leg_angle, right_leg_angle, left_hip_angle, right_hip_angle)
-
+                    pick_flag = pick_Check(
+                        left_leg_angle, right_leg_angle, left_hip_angle, right_hip_angle)
 
                 # Function for Start Flag
 
                 if pick_flag == True and start_flag == False:
-                    start_flag = start_Check(left_hand_angle, right_hand_angle, left_leg_angle, right_leg_angle, left_hip_angle, right_hip_angle, nose, right_wrist, left_wrist)
+                    start_flag = start_Check(left_hand_angle, right_hand_angle, left_leg_angle,
+                                             right_leg_angle, left_hip_angle, right_hip_angle, nose, right_wrist, left_wrist)
                     if (start_flag == True):
                         print("Start Flag True")
 
-
                 if start_flag == True and frame_Counter > 0:
                     frame_Counter = frame_Counter - 1
-                    if left_leg_angle <= 120 or right_leg_angle <= 120 or  nose[1] < right_wrist[1] or nose[1] < left_wrist[1]:
+                    if left_leg_angle <= 120 or right_leg_angle <= 120 or nose[1] < right_wrist[1] or nose[1] < left_wrist[1]:
                         # leg_flag = False
                         end_flag = False
                         break
-                    if left_hip_angle <= 120 or right_hip_angle <= 120 or  nose[1] < right_wrist[1] or nose[1] < left_wrist[1]:
+                    if left_hip_angle <= 120 or right_hip_angle <= 120 or nose[1] < right_wrist[1] or nose[1] < left_wrist[1]:
                         # hip_flag = False
                         end_flag = False
                         break
-                    if left_hand_angle <= 90 or right_hand_angle <= 90 or  nose[1] < right_wrist[1] or nose[1] < left_wrist[1]:
+                    if left_hand_angle <= 90 or right_hand_angle <= 90 or nose[1] < right_wrist[1] or nose[1] < left_wrist[1]:
                         # hand_flag = False
                         end_flag = False
                         break
 
-                    
                 # Visualize angle
                 cv2.putText(image, str(left_hand_angle),
-                        tuple(np.multiply(left_elbow, [1500, 800]).astype(int)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
+                            tuple(np.multiply(left_elbow, [
+                                  1500, 800]).astype(int)),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
 
                 cv2.putText(image, str(right_hand_angle),
-                        tuple(np.multiply(right_elbow, [1500, 800]).astype(int)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
+                            tuple(np.multiply(right_elbow, [
+                                  1500, 800]).astype(int)),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
 
-                cv2.putText(image, str(left_leg_angle), 
-                            tuple(np.multiply(left_ankle, [1500, 800]).astype(int)), 
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA
-                                    )
+                cv2.putText(image, str(left_leg_angle),
+                            tuple(np.multiply(left_ankle, [
+                                  1500, 800]).astype(int)),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,
+                                                            255, 0), 2, cv2.LINE_AA
+                            )
 
-                cv2.putText(image, str(right_leg_angle), 
-                            tuple(np.multiply(right_ankle, [1500, 800]).astype(int)), 
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA
-                                    )
+                cv2.putText(image, str(right_leg_angle),
+                            tuple(np.multiply(right_ankle, [
+                                  1500, 800]).astype(int)),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,
+                                                            255, 0), 2, cv2.LINE_AA
+                            )
 
                 cv2.putText(image, str(left_hip_angle),
-                        tuple(np.multiply(left_hip, [1500, 800]).astype(int)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
+                            tuple(np.multiply(
+                                left_hip, [1500, 800]).astype(int)),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
 
                 cv2.putText(image, str(right_hip_angle),
-                        tuple(np.multiply(right_hip, [1500, 800]).astype(int)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
-
-
+                            tuple(np.multiply(right_hip, [
+                                  1500, 800]).astype(int)),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
 
             except:
                 pass
@@ -237,36 +231,40 @@ def weight_lifting(fname=0, configs=None):
 
             cv2.rectangle(image, (0, 0), (225, 130), (123, 255, 255), -1)
 
-
             # Fill the Box with Flags
-            
-            cv2.putText(image, "Sit Position : {}".format(sit_flag), (5, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
-            cv2.putText(image, "Pick Position : {}".format(pick_flag), (5, 35), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
-            cv2.putText(image, "Start Position : {}".format(start_flag), (5, 55), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
-            if (end_flag == True and start_flag == True and frame_Counter == 0):
-                cv2.putText(image, "SUCCESS!!", (50, 125), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 2, cv2.LINE_AA)
-            elif (frame_Counter == 0):
-                cv2.putText(image, "FAIL!!", (50, 125), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 2, cv2.LINE_AA)
 
+            cv2.putText(image, "Sit Position : {}".format(
+                sit_flag), (5, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+            cv2.putText(image, "Pick Position : {}".format(
+                pick_flag), (5, 35), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+            cv2.putText(image, "Start Position : {}".format(
+                start_flag), (5, 55), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+            if (end_flag == True and start_flag == True and frame_Counter == 0):
+                cv2.putText(image, "SUCCESS!!", (50, 125),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 2, cv2.LINE_AA)
+            elif (frame_Counter == 0):
+                cv2.putText(image, "FAIL!!", (50, 125),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 2, cv2.LINE_AA)
 
             # Render Detections
             mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
-                                    mp_drawing.DrawingSpec(
-                                        color=(245, 117, 66), thickness=2, circle_radius=2),
-                                    mp_drawing.DrawingSpec(
-                                        color=(245, 66, 230), thickness=2, circle_radius=2)
-                                    )
+                                      mp_drawing.DrawingSpec(
+                                          color=(245, 117, 66), thickness=2, circle_radius=2),
+                                      mp_drawing.DrawingSpec(
+                                          color=(245, 66, 230), thickness=2, circle_radius=2)
+                                      )
 
             cv2.imshow('MediaPipe Feed', image)
+            vid_writer.write(image)
 
             if cv2.waitKey(10) & 0xFF == ord('q'):
                 break
-
 
     if end_flag == True and start_flag == True:
         ans = "Success"
     else:
         ans = "Fail"
+    vid_writer.release()
     cap.release()
     cv2.destroyAllWindows()
     return ans
@@ -274,5 +272,3 @@ def weight_lifting(fname=0, configs=None):
 
 print(weight_lifting("w1.mp4"))
 # print(weight_lifting())
-
-    
