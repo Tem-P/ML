@@ -24,8 +24,8 @@ def calculate_angle(a, b, c):
     b = np.array(b)  # Mid
     c = np.array(c)  # End
 
-    radians = np.arctan2(c[1] - b[1], c[0] - b[0]) - \
-        np.arctan2(a[1] - b[1], a[0] - b[1])
+    radians = (np.arctan2(c[1] - b[1], c[0] - b[0]) -
+               np.arctan2(a[1] - b[1], a[0] - b[0]))
     angle = np.abs(radians * 180.0 / np.pi)
 
     if angle > 180.0:
@@ -46,11 +46,12 @@ with mp_pose.Pose(min_detection_confidence=0.8, min_tracking_confidence=0.8) as 
         #cap.set(cv2.CAP_PROP_FRAME_WIDTH, dimension[0])
         #cap.set(cv2.CAP_PROP_FRAME_HEIGHT, dimension[1])
         ret, frame = cap.read()
-        if type(frame)==type(None):
+        if type(frame) == type(None):
             break
         frame = cv2.resize(frame, (1540, 800))
-        if vid_writer==None:
-            vid_writer = cv2.VideoWriter('output.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 10, (frame.shape[1],frame.shape[0]))
+        if vid_writer == None:
+            vid_writer = cv2.VideoWriter('output.avi', cv2.VideoWriter_fourcc(
+                'M', 'J', 'P', 'G'), 10, (frame.shape[1], frame.shape[0]))
 
         # Recolor Feed
         image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -122,8 +123,6 @@ with mp_pose.Pose(min_detection_confidence=0.8, min_tracking_confidence=0.8) as 
             right_hip_angle = calculate_angle(
                 right_shoulder, right_hip, right_knee)
 
-
-
             if sit_flag == False:
                 if left_leg_angle <= 120 and right_leg_angle <= 120 and left_hip_angle <= 120 and right_hip_angle <= 120:
                     sit_flag = True
@@ -145,11 +144,10 @@ with mp_pose.Pose(min_detection_confidence=0.8, min_tracking_confidence=0.8) as 
                 print(nose[1])
                 print(" ")
 
-
             if pick_flag == True and start_flag == False:
                 if left_hand_angle >= 90 and right_hand_angle >= 90 and right_leg_angle >= 90 and left_leg_angle >= 90 and right_hip_angle >= 90 and left_hip_angle >= 90 and nose[1] > right_wrist[1] and nose[1] > left_wrist[1]:
-                # if left_hand_angle >= 95 and right_hand_angle >= 95 and right_leg_angle >= 90 and left_leg_angle >= 90 and right_hip_angle >= 130 and left_hip_angle >= 130 and 
-                # if nose[1] > left_wrist[1] and nose[1] > right_wrist[1]:
+                    # if left_hand_angle >= 95 and right_hand_angle >= 95 and right_leg_angle >= 90 and left_leg_angle >= 90 and right_hip_angle >= 130 and left_hip_angle >= 130 and
+                    # if nose[1] > left_wrist[1] and nose[1] > right_wrist[1]:
 
                     start_flag = True
                     # print(left_hand_angle)
@@ -172,7 +170,6 @@ with mp_pose.Pose(min_detection_confidence=0.8, min_tracking_confidence=0.8) as 
             #     if left_hand_angle <= 100 or right_hand_angle <= 100 or right_leg_angle <= 100 or left_leg_angle <= 100 or right_hip_angle <= 100 or left_hip_angle <= 100 or nose[1] < right_wrist[1] or nose[1] < left_wrist[1]:
             #         end_flag = False
             #         break
-
 
                     time.sleep(1)
             # Visualize angle
@@ -219,4 +216,3 @@ else:
     print("Fail")
 cap.release()
 cv2.destroyAllWindows()
-
