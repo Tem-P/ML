@@ -14,6 +14,10 @@ start_flag = False
 # Calculate Angle
 
 
+def distance(a, b):
+    return (a[0]-b[0]) + (a[1]-b[1]) + (a[2]-b[2])
+
+
 def calculate_angle(a, b, c):
     a = np.array(a)  # First
     b = np.array(b)  # Mid
@@ -40,7 +44,7 @@ with mp_pose.Pose(min_detection_confidence=0.8, min_tracking_confidence=0.8) as 
         #cap.set(cv2.CAP_PROP_FRAME_WIDTH, dimension[0])
         #cap.set(cv2.CAP_PROP_FRAME_HEIGHT, dimension[1])
         ret, frame = cap.read()
-        frame = cv2.resize(frame, (1540, 800))
+        frame = cv2.resize(frame, (720, 480))
         # Recolor Feed
         image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         image.flags.writeable = False
@@ -89,6 +93,9 @@ with mp_pose.Pose(min_detection_confidence=0.8, min_tracking_confidence=0.8) as 
             right_ankle = [landmarks[mp_pose.PoseLandmark.RIGHT_ANKLE.value].x,
                            landmarks[mp_pose.PoseLandmark.RIGHT_ANKLE.value].y]
 
+            nose = [landmarks[mp_pose.PoseLandmark.NOSE.value].x,
+                    landmarks[mp_pose.PoseLandmark.NOSE.value].y, landmarks[mp_pose.PoseLandmark.NOSE.value].z]
+
             # Calculate Angle
             left_hand_angle = calculate_angle(
                 left_shoulder, left_elbow, left_wrist)
@@ -120,11 +127,34 @@ with mp_pose.Pose(min_detection_confidence=0.8, min_tracking_confidence=0.8) as 
                     print("Pick Flag True")
                     # time.sleep(1)
 
+           # print(right_wrist[1])
+           # print(nose[1])
+           # print(" ")
+
             if pick_flag == True and start_flag == False:
-                if left_hand_angle >= 90 and right_hand_angle >= 90 and right_leg_angle >= 90 and left_leg_angle >= 90 and right_hip_angle >= 90 and left_hip_angle >= 90 and right_eye[1] < right_wrist[1] and left_eye[1] < left_wrist[1]:
+                # if left_hand_angle >= 90 and right_hand_angle >= 90 and right_leg_angle >= 90 and left_leg_angle >= 90 and right_hip_angle >= 90 and left_hip_angle >= 90 and nose[1] > right_wrist[1] and nose[1] > left_wrist[1]:
+                if left_hand_angle >= 95 and right_hand_angle >= 95 and right_leg_angle >= 95 and left_leg_angle >= 95 and right_hip_angle >= 95 and left_hip_angle >= 95 and nose[1] > right_wrist[1] and nose[1] > left_wrist[1]:
+
                     start_flag = True
+                    # print(left_hand_angle)
+                    # print(right_hand_angle)
+                    # print(right_leg_angle)
+                    # print(left_leg_angle)
+                    # print(right_hip_angle)
+                    # print(left_hip_angle)
+
+                   # print(nose[1])
+                   # print(left_wrist[1])
                     start_time = time.time()
-                    print("Start Flag True".format(start_time))
+                    end_flag = True
+                    print("Start Flag True : {}".format(start_time))
+                    break
+                    # time.sleep(1)
+           # y = time.time() - start_time
+           # if y < 4 and y > 3 and start_flag == True:
+           #     if left_hand_angle <= 90 or right_hand_angle <= 90 or right_leg_angle <= 90 or left_leg_angle <= 90 or right_hip_angle <= 90 or left_hip_angle <= 90 or nose[1] < right_wrist[1] or nose[1] < left_wrist[1]:
+            #        end_flag = False
+            #        break
                     # time.sleep(1)
             # Visualize angle
             # cv2.putText(image, str(left_hand_angle),
@@ -159,6 +189,10 @@ with mp_pose.Pose(min_detection_confidence=0.8, min_tracking_confidence=0.8) as 
 
         if cv2.waitKey(10) & 0xFF == ord('q'):
             break
+if end_flag == True and start_flag == True:
+    print("Success")
+else:
+    print("Fail")
 
 cap.release()
 cv2.destroyAllWindows()
