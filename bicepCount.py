@@ -135,6 +135,7 @@ def bicepCount(fname=0, config=None):
     vid_writer.release()
     cap.release()
     cv2.destroyAllWindows()
+    return left_count, right_count
 
 
 bicepCount()
