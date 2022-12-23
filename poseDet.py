@@ -261,14 +261,14 @@ def weight_lifting(fname=0, configs=None):
                 break
 
     if end_flag == True and start_flag == True:
-        ans = "Success"
+        ans = True
     else:
-        ans = "Fail"
+        ans = False
     vid_writer.release()
     cap.release()
     cv2.destroyAllWindows()
     return ans
 
 
-print(weight_lifting("w1.mp4"))
+# print(weight_lifting("w1.mp4"))
 # print(weight_lifting())
