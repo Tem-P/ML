@@ -171,8 +171,8 @@ def weight_lifting(fname=0, configs=None):
                 if pick_flag == True and start_flag == False:
                     start_flag = start_Check(left_hand_angle, right_hand_angle, left_leg_angle,
                                              right_leg_angle, left_hip_angle, right_hip_angle, nose, right_wrist, left_wrist)
-                    if (start_flag == True):
-                        print("Start Flag True")
+                  #  if (start_flag == True):
+                  #      print("Start Flag True")
 
                 if start_flag == True and frame_Counter > 0:
                     frame_Counter = frame_Counter - 1
