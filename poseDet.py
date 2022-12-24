@@ -270,5 +270,6 @@ def weight_lifting(fname=0, configs=None):
     return ans
 
 
-print(weight_lifting("w1.mp4"))
-# print(weight_lifting())
+if __name__=="__main__":
+    print(weight_lifting("w1.mp4"))
+    # print(weight_lifting())
