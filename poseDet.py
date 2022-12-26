@@ -231,7 +231,7 @@ def weight_lifting(fname=None,foutname='output.mp4', configs=None):
                 sit_flag), (5, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
             cv2.putText(image, "Pick Position : {}".format(
                 pick_flag), (5, 35), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
-            cv2.putText(image, "Start Position : {}".format(
+            cv2.putText(image, "Lift Position : {}".format(
                 start_flag), (5, 55), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
             if (end_flag == True and start_flag == True and frame_Counter == 0):
                 cv2.putText(image, "SUCCESS!!", (50, 125),
