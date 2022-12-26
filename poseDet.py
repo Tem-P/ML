@@ -79,7 +79,7 @@ def weight_lifting(fname=None,foutname='output.mp4', configs=None):
 
             if vid_writer == None:
                 vid_writer = cv2.VideoWriter(foutname, cv2.VideoWriter_fourcc(
-                    *'mp4v'), 10, (frame.shape[1], frame.shape[0]))
+                    *'mp4v'), 23, (frame.shape[1], frame.shape[0]))
 
             # Recolor Feed
             image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
