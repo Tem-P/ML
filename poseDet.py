@@ -47,7 +47,7 @@ def start_Check(left_hand_angle, right_hand_angle, left_leg_angle, right_leg_ang
         return False
 
 
-def weight_lifting(fname=0, configs=None):
+def weight_lifting(fname=None,foutname='output.mp4', configs=None):
 
     mp_drawing = mp.solutions.drawing_utils
     mp_pose = mp.solutions.pose
@@ -78,7 +78,7 @@ def weight_lifting(fname=0, configs=None):
             frame = cv2.resize(frame, (1540, 800))
 
             if vid_writer == None:
-                vid_writer = cv2.VideoWriter('output.mp4', cv2.VideoWriter_fourcc(
+                vid_writer = cv2.VideoWriter(foutname, cv2.VideoWriter_fourcc(
                     *'mp4v'), 10, (frame.shape[1], frame.shape[0]))
 
             # Recolor Feed
@@ -255,14 +255,15 @@ def weight_lifting(fname=0, configs=None):
                 break
 
     if end_flag == True and start_flag == True:
-        ans = True
+        ans = True #"Success"
     else:
-        ans = False
+        ans = False #"Fail"
     vid_writer.release()
     cap.release()
     cv2.destroyAllWindows()
     return ans
 
 
-# print(weight_lifting("w1.mp4"))
-# print(weight_lifting())
+if __name__=="__main__":
+    print(weight_lifting("w1.mp4"))
+    # print(weight_lifting())
