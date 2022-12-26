@@ -1,11 +1,6 @@
 import cv2
 import mediapipe as mp
 import numpy as np
-import time
-
-
-def distance(a, b):
-    return (a[0]-b[0]) + (a[1]-b[1]) + (a[2]-b[2])
 
 
 # Calculate Angle
@@ -108,18 +103,18 @@ def weight_lifting(fname=0, configs=None):
                 left_elbow = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x,
                               landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
                 left_wrist = [landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].x,
-                              landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y, landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].z]
+                              landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y]
                 left_eye = [landmarks[mp_pose.PoseLandmark.LEFT_EYE.value].x,
-                            landmarks[mp_pose.PoseLandmark.LEFT_EYE.value].y, landmarks[mp_pose.PoseLandmark.LEFT_EYE.value].z]
+                            landmarks[mp_pose.PoseLandmark.LEFT_EYE.value].y]
 
                 right_shoulder = [landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x,
                                   landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y]
                 right_elbow = [landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].x,
                                landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].y]
                 right_wrist = [landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].x,
-                               landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].y, landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].z]
+                               landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].y]
                 right_eye = [landmarks[mp_pose.PoseLandmark.RIGHT_EYE.value].x,
-                             landmarks[mp_pose.PoseLandmark.RIGHT_EYE.value].y, landmarks[mp_pose.PoseLandmark.RIGHT_EYE.value].z]
+                             landmarks[mp_pose.PoseLandmark.RIGHT_EYE.value].y]
 
                 left_hip = [landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].x,
                             landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].y]
@@ -157,22 +152,21 @@ def weight_lifting(fname=0, configs=None):
                 right_hip_angle = calculate_angle(
                     right_shoulder, right_hip, right_knee)
 
+                #  Sit Flag
                 if sit_flag == False:
                     sit_flag = sit_Check(left_leg_angle, right_leg_angle)
 
-                #  Function for pick Flag
+                #  Pick Flag
 
                 if sit_flag == True and pick_flag == False:
                     pick_flag = pick_Check(
                         left_leg_angle, right_leg_angle, left_hip_angle, right_hip_angle)
 
-                # Function for Start Flag
+                # Start Flag
 
                 if pick_flag == True and start_flag == False:
                     start_flag = start_Check(left_hand_angle, right_hand_angle, left_leg_angle,
                                              right_leg_angle, left_hip_angle, right_hip_angle, nose, right_wrist, left_wrist)
-                  #  if (start_flag == True):
-                  #      print("Start Flag True")
 
                 if start_flag == True and frame_Counter > 0:
                     frame_Counter = frame_Counter - 1
