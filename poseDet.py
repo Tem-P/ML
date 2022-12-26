@@ -23,7 +23,7 @@ def calculate_angle(a, b, c):
 # Function for Sit Flag
 
 def sit_Check(left_leg_angle, right_leg_angle):
-    if left_leg_angle <= 120 and left_leg_angle >= 30 and right_leg_angle <= 120 and right_leg_angle >= 30:
+    if left_leg_angle <= 90 and left_leg_angle >= 30 and right_leg_angle <= 90 and right_leg_angle >= 30:
         return True
     else:
         return False
@@ -41,13 +41,13 @@ def pick_Check(left_leg_angle, right_leg_angle, left_hip_angle, right_hip_angle)
 # Function for Start Flag
 
 def start_Check(left_hand_angle, right_hand_angle, left_leg_angle, right_leg_angle, left_hip_angle, right_hip_angle, nose, right_wrist, left_wrist):
-    if left_hand_angle >= 90 and right_hand_angle >= 90 and right_leg_angle >= 120 and left_leg_angle >= 120 and right_hip_angle >= 150 and left_hip_angle >= 150 and nose[1] > right_wrist[1] and nose[1] > left_wrist[1]:
+    if left_hand_angle >= 160 and right_hand_angle >= 160 and right_leg_angle >= 160 and left_leg_angle >= 160 and right_hip_angle >= 160 and left_hip_angle >= 160 and nose[1] > right_wrist[1] and nose[1] > left_wrist[1]:
         return True
     else:
         return False
 
 
-def weight_lifting(fname=None,foutname='output.mp4', configs=None):
+def weight_lifting(fname=None, foutname='output.mp4', configs=None):
 
     mp_drawing = mp.solutions.drawing_utils
     mp_pose = mp.solutions.pose
@@ -58,7 +58,7 @@ def weight_lifting(fname=None,foutname='output.mp4', configs=None):
     pick_flag = False
     start_flag = False
     end_flag = True
-    frame_Counter = 10
+    frame_Counter = 15
 
     #cap = cv2.VideoCapture(0)
     cap = cv2.VideoCapture(fname)
@@ -66,7 +66,7 @@ def weight_lifting(fname=None,foutname='output.mp4', configs=None):
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, dimension[1])
 
     # setup mediapipe instance
-    with mp_pose.Pose(min_detection_confidence=0.8, min_tracking_confidence=0.8) as pose:
+    with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
         while cap.isOpened():
             #cap.set(cv2.CAP_PROP_FRAME_WIDTH, dimension[0])
             #cap.set(cv2.CAP_PROP_FRAME_HEIGHT, dimension[1])
@@ -79,7 +79,7 @@ def weight_lifting(fname=None,foutname='output.mp4', configs=None):
 
             if vid_writer == None:
                 vid_writer = cv2.VideoWriter(foutname, cv2.VideoWriter_fourcc(
-                    *'mp4v'), 10, (frame.shape[1], frame.shape[0]))
+                    *'mp4v'), 23, (frame.shape[1], frame.shape[0]))
 
             # Recolor Feed
             image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -170,15 +170,15 @@ def weight_lifting(fname=None,foutname='output.mp4', configs=None):
 
                 if start_flag == True and frame_Counter > 0:
                     frame_Counter = frame_Counter - 1
-                    if left_leg_angle <= 120 or right_leg_angle <= 120 or nose[1] < right_wrist[1] or nose[1] < left_wrist[1]:
+                    if left_leg_angle <= 160 or right_leg_angle <= 160 or nose[1] < right_wrist[1] or nose[1] < left_wrist[1]:
                         # leg_flag = False
                         end_flag = False
                         break
-                    if left_hip_angle <= 120 or right_hip_angle <= 120 or nose[1] < right_wrist[1] or nose[1] < left_wrist[1]:
+                    if left_hip_angle <= 150 or right_hip_angle <= 150 or nose[1] < right_wrist[1] or nose[1] < left_wrist[1]:
                         # hip_flag = False
                         end_flag = False
                         break
-                    if left_hand_angle <= 90 or right_hand_angle <= 90 or nose[1] < right_wrist[1] or nose[1] < left_wrist[1]:
+                    if left_hand_angle <= 160 or right_hand_angle <= 160 or nose[1] < right_wrist[1] or nose[1] < left_wrist[1]:
                         # hand_flag = False
                         end_flag = False
                         break
@@ -255,15 +255,15 @@ def weight_lifting(fname=None,foutname='output.mp4', configs=None):
                 break
 
     if end_flag == True and start_flag == True:
-        ans = True #"Success"
+        ans = True  # "Success"
     else:
-        ans = False #"Fail"
+        ans = False  # "Fail"
     vid_writer.release()
     cap.release()
     cv2.destroyAllWindows()
     return ans
 
 
-if __name__=="__main__":
-    print(weight_lifting("w1.mp4"))
+if __name__ == "__main__":
+    print(weight_lifting("Fail1.mp4"))
     # print(weight_lifting())
