@@ -56,12 +56,11 @@ def weight_lifting(fname=None, foutname='output.mp4', configs=None):
     vid_writer = None
     sit_flag = False
     pick_flag = False
-    start_flag = False
+    lift_flag = False
     end_flag = True
-    frame_Counter = 20
+    frame_Counter = 35
     current_frame = 0
 
-    #cap = cv2.VideoCapture(0)
     cap = cv2.VideoCapture(fname)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, dimension[0])
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, dimension[1])
@@ -99,6 +98,7 @@ def weight_lifting(fname=None, foutname='output.mp4', configs=None):
 
                 # Get coordinates
 
+                # Left Arm
                 left_shoulder = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,
                                  landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
                 left_elbow = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x,
@@ -106,13 +106,7 @@ def weight_lifting(fname=None, foutname='output.mp4', configs=None):
                 left_wrist = [landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].x,
                               landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y]
 
-                right_shoulder = [landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x,
-                                  landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y]
-                right_elbow = [landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].x,
-                               landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].y]
-                right_wrist = [landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].x,
-                               landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].y]
-
+                # Left Leg
                 left_hip = [landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].x,
                             landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].y]
                 left_knee = [landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].x,
@@ -120,6 +114,15 @@ def weight_lifting(fname=None, foutname='output.mp4', configs=None):
                 left_ankle = [landmarks[mp_pose.PoseLandmark.LEFT_ANKLE.value].x,
                               landmarks[mp_pose.PoseLandmark.LEFT_ANKLE.value].y]
 
+                # Right Arm
+                right_shoulder = [landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x,
+                                  landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y]
+                right_elbow = [landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].x,
+                               landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].y]
+                right_wrist = [landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].x,
+                               landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].y]
+
+                # Right Leg
                 right_hip = [landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].x,
                              landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].y]
                 right_knee = [landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].x,
@@ -127,8 +130,9 @@ def weight_lifting(fname=None, foutname='output.mp4', configs=None):
                 right_ankle = [landmarks[mp_pose.PoseLandmark.RIGHT_ANKLE.value].x,
                                landmarks[mp_pose.PoseLandmark.RIGHT_ANKLE.value].y]
 
+                # Nose
                 nose = [landmarks[mp_pose.PoseLandmark.NOSE.value].x,
-                        landmarks[mp_pose.PoseLandmark.NOSE.value].y, landmarks[mp_pose.PoseLandmark.NOSE.value].z]
+                        landmarks[mp_pose.PoseLandmark.NOSE.value].y]
 
                 # Calculate Angle
                 left_hand_angle = calculate_angle(
@@ -154,31 +158,26 @@ def weight_lifting(fname=None, foutname='output.mp4', configs=None):
                     sit_flag = sit_Check(left_leg_angle, right_leg_angle)
 
                 #  Pick Flag
-
                 if sit_flag == True and pick_flag == False:
                     pick_flag = pick_Check(
                         left_leg_angle, right_leg_angle, left_hip_angle, right_hip_angle, right_wrist, left_wrist, right_hip, left_hip)
 
-                # Start Flag
+                # Lift Flag
+                if pick_flag == True and lift_flag == False:
+                    lift_flag = start_Check(left_hand_angle, right_hand_angle, left_leg_angle,
+                                            right_leg_angle, left_hip_angle, right_hip_angle, nose, right_wrist, left_wrist)
 
-                if pick_flag == True and start_flag == False:
-                    start_flag = start_Check(left_hand_angle, right_hand_angle, left_leg_angle,
-                                             right_leg_angle, left_hip_angle, right_hip_angle, nose, right_wrist, left_wrist)
-
-                if start_flag == True and frame_Counter > 0:
+                # Final Stage
+                if lift_flag == True and frame_Counter > 0:
                     frame_Counter = frame_Counter - 1
                     if left_leg_angle <= 160 or right_leg_angle <= 160 or nose[1] < right_wrist[1] or nose[1] < left_wrist[1]:
-                        # leg_flag = False
                         end_flag = False
-                        # break
+
                     if left_hip_angle <= 150 or right_hip_angle <= 150 or nose[1] < right_wrist[1] or nose[1] < left_wrist[1]:
-                        # hip_flag = False
                         end_flag = False
-                        # break
+
                     if left_hand_angle <= 160 or right_hand_angle <= 160 or nose[1] < right_wrist[1] or nose[1] < left_wrist[1]:
-                        # hand_flag = False
                         end_flag = False
-                        # break
 
                 # Visualize angle
                 cv2.putText(image, str(left_hand_angle),
@@ -219,23 +218,27 @@ def weight_lifting(fname=None, foutname='output.mp4', configs=None):
                 pass
 
             # Setup Status Box
-
-            cv2.rectangle(image, (0, 0), (225, 130), (123, 255, 255), -1)
+            cv2.rectangle(image, (0, 0), (235, 130), (123, 255, 255), -1)
 
             # Fill the Box with Flags
+            cv2.putText(image, "Sit Posture : {}".format(
+                sit_flag), (5, 18), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 2, cv2.LINE_AA)
 
-            cv2.putText(image, "Sit Position : {}".format(
-                sit_flag), (5, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
-            cv2.putText(image, "Pick Position : {}".format(
-                pick_flag), (5, 35), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
-            cv2.putText(image, "Lift Position : {}".format(
-                start_flag), (5, 55), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
-            if (end_flag == True and start_flag == True and frame_Counter == 0):
-                cv2.putText(image, "SUCCESS!!", (50, 125),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 2, cv2.LINE_AA)
-            elif ((end_flag == False and frame_Counter == 0) or ((sit_flag == False or pick_flag == False or start_flag == False) and length - current_frame < 20)):
-                cv2.putText(image, "FAIL!!", (50, 125),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 2, cv2.LINE_AA)
+            cv2.putText(image, "Pick Posture : {}".format(
+                pick_flag), (5, 48), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 2, cv2.LINE_AA)
+
+            cv2.putText(image, "Lift Posture : {}".format(
+                lift_flag), (5, 78), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 2, cv2.LINE_AA)
+
+            if (end_flag == True and lift_flag == True and frame_Counter == 0):
+                cv2.putText(image, "Result : SUCCESS :)", (5, 118),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2, cv2.LINE_AA)
+            elif ((end_flag == False and frame_Counter == 0) or ((sit_flag == False or pick_flag == False or lift_flag == False) and length - current_frame < 40)):
+                cv2.putText(image, "Result : FAIL !!! ", (5, 118),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2, cv2.LINE_AA)
+            else:
+                cv2.putText(image, "Result : Wait....", (5, 118),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2, cv2.LINE_AA)
 
             # Render Detections
             mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
@@ -245,13 +248,14 @@ def weight_lifting(fname=None, foutname='output.mp4', configs=None):
                                           color=(245, 66, 230), thickness=2, circle_radius=2)
                                       )
 
-            cv2.imshow('MediaPipe Feed', image)
+            #cv2.imshow('MediaPipe Feed', image)
             vid_writer.write(image)
 
-            # if cv2.waitKey(2) & 0xFF == ord('q'):
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
             #    break
 
-    if end_flag == True and start_flag == True:
+    # Return Success or Fail
+    if end_flag == True and lift_flag == True:
         ans = True  # "Success"
     else:
         ans = False  # "Fail"
@@ -262,5 +266,4 @@ def weight_lifting(fname=None, foutname='output.mp4', configs=None):
 
 
 if __name__ == "__main__":
-    print(weight_lifting("Fail1.mp4"))
-    # print(weight_lifting())
+    print(weight_lifting("Fail3.mp4"))
