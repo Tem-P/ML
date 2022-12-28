@@ -31,8 +31,8 @@ def sit_Check(left_leg_angle, right_leg_angle):
 
 # Function for Pick Flag
 
-def pick_Check(left_leg_angle, right_leg_angle, left_hip_angle, right_hip_angle):
-    if left_leg_angle >= 120 and right_leg_angle >= 120 and left_hip_angle >= 90 and right_hip_angle >= 90:
+def pick_Check(left_leg_angle, right_leg_angle, left_hip_angle, right_hip_angle, right_wrist, left_wrist, right_hip, left_hip):
+    if left_leg_angle <= 120 and right_leg_angle <= 120 and left_hip_angle <= 120 and right_hip_angle <= 120 and left_leg_angle >= 90 and right_leg_angle >= 90 and left_hip_angle >= 90 and right_hip_angle >= 90 and right_hip[1] > right_wrist[1] and left_hip[1] > left_wrist[1]:
         return True
     else:
         return False
@@ -58,13 +58,14 @@ def weight_lifting(fname=None, foutname='output.mp4', configs=None):
     pick_flag = False
     start_flag = False
     end_flag = True
-    frame_Counter = 15
+    frame_Counter = 20
+    current_frame = 0
 
     #cap = cv2.VideoCapture(0)
     cap = cv2.VideoCapture(fname)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, dimension[0])
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, dimension[1])
-
+    length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     # setup mediapipe instance
     with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
         while cap.isOpened():
@@ -76,7 +77,7 @@ def weight_lifting(fname=None, foutname='output.mp4', configs=None):
                 break
 
             frame = cv2.resize(frame, (1540, 800))
-
+            current_frame = current_frame + 1
             if vid_writer == None:
                 vid_writer = cv2.VideoWriter(foutname, cv2.VideoWriter_fourcc(
                     *'mp4v'), 23, (frame.shape[1], frame.shape[0]))
@@ -156,7 +157,7 @@ def weight_lifting(fname=None, foutname='output.mp4', configs=None):
 
                 if sit_flag == True and pick_flag == False:
                     pick_flag = pick_Check(
-                        left_leg_angle, right_leg_angle, left_hip_angle, right_hip_angle)
+                        left_leg_angle, right_leg_angle, left_hip_angle, right_hip_angle, right_wrist, left_wrist, right_hip, left_hip)
 
                 # Start Flag
 
@@ -169,15 +170,15 @@ def weight_lifting(fname=None, foutname='output.mp4', configs=None):
                     if left_leg_angle <= 160 or right_leg_angle <= 160 or nose[1] < right_wrist[1] or nose[1] < left_wrist[1]:
                         # leg_flag = False
                         end_flag = False
-                        break
+                        # break
                     if left_hip_angle <= 150 or right_hip_angle <= 150 or nose[1] < right_wrist[1] or nose[1] < left_wrist[1]:
                         # hip_flag = False
                         end_flag = False
-                        break
+                        # break
                     if left_hand_angle <= 160 or right_hand_angle <= 160 or nose[1] < right_wrist[1] or nose[1] < left_wrist[1]:
                         # hand_flag = False
                         end_flag = False
-                        break
+                        # break
 
                 # Visualize angle
                 cv2.putText(image, str(left_hand_angle),
@@ -232,7 +233,7 @@ def weight_lifting(fname=None, foutname='output.mp4', configs=None):
             if (end_flag == True and start_flag == True and frame_Counter == 0):
                 cv2.putText(image, "SUCCESS!!", (50, 125),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 2, cv2.LINE_AA)
-            elif (frame_Counter == 0):
+            elif ((end_flag == False and frame_Counter == 0) or ((sit_flag == False or pick_flag == False or start_flag == False) and length - current_frame < 20)):
                 cv2.putText(image, "FAIL!!", (50, 125),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 2, cv2.LINE_AA)
 
@@ -247,8 +248,8 @@ def weight_lifting(fname=None, foutname='output.mp4', configs=None):
             cv2.imshow('MediaPipe Feed', image)
             vid_writer.write(image)
 
-            # if cv2.waitKey(10) & 0xFF == ord('q'):
-            #    break
+            if cv2.waitKey(2) & 0xFF == ord('q'):
+                break
 
     if end_flag == True and start_flag == True:
         ans = True  # "Success"
