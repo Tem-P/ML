@@ -51,7 +51,7 @@ def weight_lifting(fname=None, foutname='output.mp4', configs=None):
 
     mp_drawing = mp.solutions.drawing_utils
     mp_pose = mp.solutions.pose
-    dimension = [1500, 800]
+    dimension = [1080, 720]
 
     vid_writer = None
     sit_flag = False
@@ -191,14 +191,14 @@ def weight_lifting(fname=None, foutname='output.mp4', configs=None):
                             cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
 
                 cv2.putText(image, str(left_leg_angle),
-                            tuple(np.multiply(left_ankle, [
+                            tuple(np.multiply(left_knee, [
                                   1500, 800]).astype(int)),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,
                                                             255, 0), 2, cv2.LINE_AA
                             )
 
                 cv2.putText(image, str(right_leg_angle),
-                            tuple(np.multiply(right_ankle, [
+                            tuple(np.multiply(right_knee, [
                                   1500, 800]).astype(int)),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,
                                                             255, 0), 2, cv2.LINE_AA
