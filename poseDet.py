@@ -248,8 +248,8 @@ def weight_lifting(fname=None, foutname='output.mp4', configs=None):
             cv2.imshow('MediaPipe Feed', image)
             vid_writer.write(image)
 
-            if cv2.waitKey(2) & 0xFF == ord('q'):
-                break
+            # if cv2.waitKey(2) & 0xFF == ord('q'):
+            #    break
 
     if end_flag == True and start_flag == True:
         ans = True  # "Success"
