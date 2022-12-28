@@ -104,8 +104,6 @@ def weight_lifting(fname=None, foutname='output.mp4', configs=None):
                               landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
                 left_wrist = [landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].x,
                               landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y]
-                left_eye = [landmarks[mp_pose.PoseLandmark.LEFT_EYE.value].x,
-                            landmarks[mp_pose.PoseLandmark.LEFT_EYE.value].y]
 
                 right_shoulder = [landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x,
                                   landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y]
@@ -113,8 +111,6 @@ def weight_lifting(fname=None, foutname='output.mp4', configs=None):
                                landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].y]
                 right_wrist = [landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].x,
                                landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].y]
-                right_eye = [landmarks[mp_pose.PoseLandmark.RIGHT_EYE.value].x,
-                             landmarks[mp_pose.PoseLandmark.RIGHT_EYE.value].y]
 
                 left_hip = [landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].x,
                             landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].y]
