@@ -47,7 +47,7 @@ def start_Check(left_hand_angle, right_hand_angle, left_leg_angle, right_leg_ang
         return False
 
 
-def weight_lifting(fname=None, foutname='output.mp4', configs=None):
+def weight_lifting(fname=None, foutname='output.mkv', configs=None):
 
     mp_drawing = mp.solutions.drawing_utils
     mp_pose = mp.solutions.pose
@@ -65,11 +65,11 @@ def weight_lifting(fname=None, foutname='output.mp4', configs=None):
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, dimension[0])
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, dimension[1])
     length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
     # setup mediapipe instance
     with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
         while cap.isOpened():
-            #cap.set(cv2.CAP_PROP_FRAME_WIDTH, dimension[0])
-            #cap.set(cv2.CAP_PROP_FRAME_HEIGHT, dimension[1])
+
             ret, frame = cap.read()
 
             if ret == False:
@@ -79,7 +79,7 @@ def weight_lifting(fname=None, foutname='output.mp4', configs=None):
             current_frame = current_frame + 1
             if vid_writer == None:
                 vid_writer = cv2.VideoWriter(foutname, cv2.VideoWriter_fourcc(
-                    *'mp4v'), 23, (frame.shape[1], frame.shape[0]))
+                    *'h264'), 23, (frame.shape[1], frame.shape[0]))
 
             # Recolor Feed
             image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
